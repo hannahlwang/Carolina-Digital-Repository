@@ -296,7 +296,7 @@ public class DepositSupervisor implements WorkerListener {
 	 */
 	@Override
 	public void onEvent(WorkerEvent event, Worker worker, String queue,
-			Job job, Object runner, Object result, Exception ex) {
+			Job job, Object runner, Object result, Throwable ex) {
 		if (WorkerEvent.WORKER_POLL != event)
 			LOG.debug("WorkerEvent {}, {}, {}, {}, {}, {}, {}", new Object[] {
 					event, worker, queue, job, runner, result, ex });
