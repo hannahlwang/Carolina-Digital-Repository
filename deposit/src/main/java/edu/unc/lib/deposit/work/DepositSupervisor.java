@@ -66,7 +66,7 @@ public class DepositSupervisor implements WorkerListener {
 
 	@Autowired
 	private WorkerPool depositWorkerPool;
-	
+
 	@Autowired
 	private WorkerPool cdrMetsDepositWorkerPool;
 
@@ -190,7 +190,7 @@ public class DepositSupervisor implements WorkerListener {
 			LOG.info("Starting deposit workers");
 			depositWorkerPool.run();
 		}
-		
+
 		if (cdrMetsDepositWorkerPool.isShutdown()) {
 			throw new Error("Cannot start deposit workers, already shutdown.");
 		} else if (cdrMetsDepositWorkerPool.isPaused()) {
@@ -368,7 +368,7 @@ public class DepositSupervisor implements WorkerListener {
 			LOG.debug("Job {} has been paused", depositUUID);
 			return;
 		}
-		
+
 		if(CleanupDepositJob.class.getName().equals(job.getClassName())) {
 			LOG.debug("Job {} is cleanup job, deposit state will expire", depositUUID);
 			return;
@@ -528,6 +528,7 @@ public class DepositSupervisor implements WorkerListener {
 			LOG.info("Queuing {} for deposit {}",
 					cleanJob.getClassName(), depositUUID);
 			c.delayedEnqueue(Queue.DELAYED_PREPARE.name(), cleanJob, schedule);
+			c.end();
 		}
 	}
 
