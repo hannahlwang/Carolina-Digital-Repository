@@ -36,14 +36,14 @@
 
     <sch:pattern>
         <sch:title>Language Authority</sch:title>
-        <sch:rule context="mods:language/mods:languageTerm">
+        <sch:rule context="mods:language/mods:languageTerm[not(@type) or @type='code']">
             <sch:assert test="$langISO[text() = current()/text()]">The language code "<sch:value-of select="current()/text()"/>" under the authority "<sch:value-of select="@authority"/>" is not in the  ISO 639.2 bibliographic code list. (see http://www.loc.gov/standards/iso639-2/)</sch:assert>
         </sch:rule>
     </sch:pattern>
 
     <sch:pattern>
         <sch:title>Language Authority</sch:title>
-        <sch:rule context="mods:language/mods:languageTerm">
+        <sch:rule context="mods:language/mods:languageTerm[not(@type) or @type='code']">
             <sch:assert test="@authority = 'iso639-2b'">Language authority must be specified as the
                 ISO 639-2b standard, 'iso639-2b'.</sch:assert>
         </sch:rule>
