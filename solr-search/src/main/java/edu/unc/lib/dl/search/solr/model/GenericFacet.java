@@ -27,6 +27,7 @@ public class GenericFacet implements Cloneable, SearchFacet {
 	protected long count;
 	protected String value;
 	protected String displayValue;
+	protected Integer facetLimit;
 	
 	public GenericFacet(){
 	}
@@ -59,9 +60,9 @@ public class GenericFacet implements Cloneable, SearchFacet {
 		this.count = facet.getCount();
 		this.value = facet.getValue();
 		this.displayValue = facet.getDisplayValue();
+		this.facetLimit = facet.getFacetLimit();
 	}
 	
-
 	@Override
 	public String getFieldName() {
 		return fieldName;
@@ -107,7 +108,16 @@ public class GenericFacet implements Cloneable, SearchFacet {
 	public String getLimitToValue() {
 		return value;
 	}
-	
+
+	@Override
+	public Integer getFacetLimit() {
+		return facetLimit;
+	}
+
+	public void setFacetLimit(Integer facetLimit) {
+		this.facetLimit = facetLimit;
+	}
+
 	@Override
 	public Object clone() {
 		return new GenericFacet(this);

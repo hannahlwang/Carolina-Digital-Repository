@@ -59,4 +59,12 @@ public interface SearchFacet {
 	 * @return
 	 */
 	public String getLimitToValue();
+
+	/**
+	 * Returns the maximum number of facet values to return for this facet. Null indicates that no explicit limit was
+	 * specified.
+	 *
+	 * @return
+	 */
+	public Integer getFacetLimit();
 }

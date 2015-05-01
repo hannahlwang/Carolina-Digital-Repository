@@ -50,6 +50,7 @@ import edu.unc.lib.dl.search.solr.model.BriefObjectMetadataBean;
 import edu.unc.lib.dl.search.solr.model.CutoffFacet;
 import edu.unc.lib.dl.search.solr.model.FacetFieldFactory;
 import edu.unc.lib.dl.search.solr.model.FacetFieldObject;
+import edu.unc.lib.dl.search.solr.model.GenericFacet;
 import edu.unc.lib.dl.search.solr.model.GroupedMetadataBean;
 import edu.unc.lib.dl.search.solr.model.IdListRequest;
 import edu.unc.lib.dl.search.solr.model.SearchRequest;
@@ -509,14 +510,6 @@ public class SolrSearchService {
 			}
 		}
 
-		// Override the base facet limit if overrides are given.
-		if (searchState.getFacetLimits() != null) {
-			for (Entry<String, Integer> facetLimit : searchState.getFacetLimits().entrySet()) {
-				solrQuery.add("f." + solrSettings.getFieldName(facetLimit.getKey()) + ".facet.limit", facetLimit.getValue()
-						.toString());
-			}
-		}
-
 		// Add facet limits
 		Map<String, Object> facets = searchState.getFacets();
 		if (facets != null) {
@@ -525,13 +518,20 @@ public class SolrSearchService {
 				Entry<String, Object> facetEntry = facetIt.next();
 
 				if (facetEntry.getValue() instanceof String) {
-					LOG.debug("Adding facet " + facetEntry.getKey() + " as a String");
+					LOG.debug("Adding facet {} as a String", facetEntry.getKey());
 					// Add Normal facets
 					solrQuery.addFilterQuery(solrSettings.getFieldName(facetEntry.getKey()) + ":\""
 							+ SolrSettings.sanitize((String) facetEntry.getValue()) + "\"");
 				} else {
-					LOG.debug("Adding facet " + facetEntry.getKey() + " as a " + facetEntry.getValue().getClass().getName());
-					facetFieldUtil.addToSolrQuery(facetEntry.getValue(), solrQuery);
+					LOG.debug("Adding facet {} as a {}", facetEntry.getKey(), facetEntry.getValue().getClass().getName());
+					GenericFacet facet = (GenericFacet) facetEntry.getValue();
+					facetFieldUtil.addToSolrQuery(facet, solrQuery);
+
+					// Override the base facet limit if overrides are given.
+					if (facet.getFacetLimit() != null) {
+						solrQuery.add("f." + solrSettings.getFieldName(facet.getFieldName()) + ".facet.limit",
+								facet.getFacetLimit().toString());
+					}
 				}
 			}
 		}
@@ -542,7 +542,7 @@ public class SolrSearchService {
 			Set<String> facetsQueried = searchState.getFacets().keySet();
 			// Apply closing cutoff to all cutoff facets that are being retrieved but not being queried for
 			for (String fieldKey : searchState.getFacetsToRetrieve()) {
-				if (!facetsQueried.contains(fieldKey)) {
+				if (!facetsQueried.contains(fieldKey) || ((GenericFacet) searchState.getFacets().get(fieldKey)).getValue() == null) {
 					facetFieldUtil.addDefaultFacetPivot(fieldKey, solrQuery);
 				}
 			}

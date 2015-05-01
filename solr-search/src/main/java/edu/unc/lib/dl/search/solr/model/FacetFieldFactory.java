@@ -44,7 +44,7 @@ public class FacetFieldFactory {
 		}
 		try {
 			Constructor<?> constructor = facetClass.getConstructor(String.class, String.class);
-			Object newFacet = constructor.newInstance(fieldKey, facetValue);
+			Object newFacet = constructor.newInstance(fieldKey, (String) facetValue);
 			/*if (newFacet == null)
 				throw new Exception();*/
 			return (GenericFacet) newFacet;

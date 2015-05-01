@@ -18,6 +18,7 @@
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import org.apache.solr.client.solrj.response.FacetField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class CutoffFacet extends AbstractHierarchicalFacet {
 	
 	public CutoffFacet(String fieldName, List<String> facetStrings, long count) {
 		super(fieldName, null, count);
+		this.value = this.extractCutoffs(facetStrings.get(facetStrings.size() - 1));
 		for (String facetString: facetStrings) {
 			CutoffFacetNode node = new CutoffFacetNode(facetString);
 			this.facetNodes.add(node);
@@ -64,7 +66,7 @@ public class CutoffFacet extends AbstractHierarchicalFacet {
 	}
 	
 	public CutoffFacet(CutoffFacet facet) {
-		super((GenericFacet)facet);
+		super(facet);
 		this.cutoff = facet.getCutoff();
 		this.facetCutoff = facet.getFacetCutoff();
 		for (HierarchicalFacetNode node: facet.getFacetNodes()) {
@@ -96,12 +98,14 @@ public class CutoffFacet extends AbstractHierarchicalFacet {
 	
 	public void sortTiers() {
 		Collections.sort(this.facetNodes, new Comparator<HierarchicalFacetNode>(){
+			@Override
 			public int compare(HierarchicalFacetNode node1, HierarchicalFacetNode node2) {
 				return ((CutoffFacetNode)node1).getTier() - ((CutoffFacetNode)node2).getTier();
 			}
 		});
 	}
 	
+	@Override
 	public void addNode(HierarchicalFacetNode node) {
 		facetNodes.add(node);
 	}
@@ -128,7 +132,7 @@ public class CutoffFacet extends AbstractHierarchicalFacet {
 		if ("*".equals(lastNode.getSearchKey())) {
 			if (this.facetNodes.size() == 1)
 				return null;
-			return (CutoffFacetNode)this.facetNodes.get(this.facetNodes.size()-2); 
+			return (CutoffFacetNode)this.facetNodes.get(this.facetNodes.size()-2);
 		}
 		return lastNode;
 	}

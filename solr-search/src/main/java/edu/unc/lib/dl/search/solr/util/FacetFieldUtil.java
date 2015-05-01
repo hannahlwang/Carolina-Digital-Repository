@@ -18,18 +18,23 @@ package edu.unc.lib.dl.search.solr.util;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.unc.lib.dl.search.solr.model.CaseInsensitiveFacet;
 import edu.unc.lib.dl.search.solr.model.CutoffFacet;
 import edu.unc.lib.dl.search.solr.model.CutoffFacetNode;
+import edu.unc.lib.dl.search.solr.model.FacetFieldFactory;
 import edu.unc.lib.dl.search.solr.model.GenericFacet;
 import edu.unc.lib.dl.search.solr.model.HierarchicalFacetNode;
 import edu.unc.lib.dl.search.solr.model.MultivaluedHierarchicalFacet;
+import edu.unc.lib.dl.search.solr.model.SearchState;
 
 public class FacetFieldUtil {
 
 	private SearchSettings searchSettings;
 	private SolrSettings solrSettings;
+	@Autowired
+	private FacetFieldFactory facetFieldFactory;
 
 	/**
 	 * Apply facet restrictions to a solr query based on the type of facet provided
@@ -38,6 +43,11 @@ public class FacetFieldUtil {
 	 * @param solrQuery
 	 */
 	public void addToSolrQuery(Object facetObject, SolrQuery solrQuery) {
+		GenericFacet facet = (GenericFacet) facetObject;
+		if (facet.getValue() == null) {
+			return;
+		}
+
 		if (facetObject instanceof CutoffFacet) {
 			this.addCutoffFacetValue((CutoffFacet) facetObject, solrQuery);
 		} else if (facetObject instanceof MultivaluedHierarchicalFacet) {
@@ -116,6 +126,29 @@ public class FacetFieldUtil {
 		} else if (MultivaluedHierarchicalFacet.class.equals(facetClass)) {
 			solrQuery.add("f." + solrFieldName + ".facet.prefix", "^");
 		}
+	}
+
+	/**
+	 * Set a limit to the number of values to be listed for a facet.
+	 *
+	 * @param fieldKey
+	 *           the key of the field being limited.
+	 * @param facetLimit
+	 * @param searchState
+	 */
+	public void setFacetLimit(String fieldKey, Integer facetLimit, SearchState searchState) {
+		// Create a new facet object for the facet being limited
+		GenericFacet facet = facetFieldFactory.createFacet(fieldKey, null);
+
+		// Check if there was an existing facet (may not match the name of the field in the request)
+		GenericFacet existingFacet = (GenericFacet) searchState.getFacets().get(facet.getFieldName());
+		if (existingFacet == null) {
+			searchState.getFacets().put(facet.getFieldName(), facet);
+		} else {
+			facet = existingFacet;
+		}
+
+		facet.setFacetLimit(facetLimit);
 	}
 
 	public void setSearchSettings(SearchSettings searchSettings) {

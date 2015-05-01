@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import edu.unc.lib.dl.search.solr.model.FacetFieldFactory;
 import edu.unc.lib.dl.search.solr.model.SearchState;
+import edu.unc.lib.dl.search.solr.util.FacetFieldUtil;
 import edu.unc.lib.dl.search.solr.util.SearchSettings;
 
 /**
@@ -40,7 +41,9 @@ public class SearchActionService {
 	private SearchSettings searchSettings;
 	@Autowired
 	private FacetFieldFactory facetFieldFactory;
-	
+	@Autowired
+	private FacetFieldUtil facetFieldUtil;
+
 	public SearchActionService(){
 	}
 	
@@ -89,7 +92,7 @@ public class SearchActionService {
 				setFacetLimit(searchState, actionValues);
 				setStartRow(searchState, 0);
 			} else if (actionName.equals(searchSettings.actionName("REMOVE_FACET_LIMIT"))){
-				removeField(searchState.getFacetLimits(), actionValues);
+				removeFacetLimit(searchState, actionValues);
 				setStartRow(searchState, 0);
 			} else if (actionName.equals(searchSettings.actionName("SET_FACET_SELECT"))){
 				setFacetSelect(searchState, actionValues);
@@ -196,11 +199,25 @@ public class SearchActionService {
 			if (key == null)
 				continue;
 			try {
-				searchState.getFacetLimits().put(key, Integer.parseInt(valueArray[1]));
-			} catch (NumberFormatException e){
-				LOG.error("Failed to perform set facet limit action: " + valueArray[1]);
+				facetFieldUtil.setFacetLimit(key, Integer.parseInt(valueArray[1]), searchState);
+			} catch (Exception e) {
+				LOG.warn("Failed to perform set facet limit action: {}", valueArray[1], e);
 			}
 		}
+	}
+
+	private void removeFacetLimit(SearchState searchState, String[] values) {
+		for (String value : values) {
+			String key = searchSettings.searchFieldKey(value);
+			if (key == null)
+				continue;
+			try {
+				facetFieldUtil.setFacetLimit(key, null, searchState);
+			} catch (Exception e) {
+				LOG.warn("Failed to perform remove facet limit action: {}", value);
+			}
+		}
+
 	}
 	
 	private void setFacetSelect(SearchState searchState, String[] values){

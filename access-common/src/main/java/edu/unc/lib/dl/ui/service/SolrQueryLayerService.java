@@ -1055,7 +1055,8 @@ public class SolrQueryLayerService extends SolrSearchService {
 
 	public void populateBreadcrumbs(SearchRequest searchRequest, SearchResultResponse resultResponse) {
 		SearchState searchState = searchRequest.getSearchState();
-		if (searchState.getFacets().containsKey(SearchFieldKeys.CONTENT_TYPE.name())) {
+		GenericFacet formatFacet = (GenericFacet) searchState.getFacets().get(SearchFieldKeys.CONTENT_TYPE.name());
+		if (formatFacet != null && formatFacet.getValue() != null) {
 			if (resultResponse.getResultCount() == 0 || searchState.getResultFields() == null
 					|| !searchState.getResultFields().contains(SearchFieldKeys.CONTENT_TYPE.name())) {
 				SearchState contentTypeSearchState = new SearchState();

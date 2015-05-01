@@ -43,7 +43,6 @@ public class SearchState implements Serializable, Cloneable {
 	private Map<String, String> searchFields;
 	private Map<String, RangePair> rangeFields;
 	private Map<String, Object> facets;
-	private Map<String, Integer> facetLimits;
 	private Map<String, String> facetSorts;
 	private Collection<String> facetsToRetrieve;
 	private Collection<Permission> permissionLimits;
@@ -64,7 +63,6 @@ public class SearchState implements Serializable, Cloneable {
 		rangeFields = new HashMap<String, RangePair>();
 		permissionLimits = null;
 		facets = new HashMap<String, Object>();
-		facetLimits = new HashMap<String, Integer>();
 		facetSorts = new HashMap<String, String>();
 		resultFields = null;
 		facetsToRetrieve = null;
@@ -92,9 +90,6 @@ public class SearchState implements Serializable, Cloneable {
 					facets.put(item.getKey(), item.getValue());
 				}
 			}
-		}
-		if (searchState.getFacetLimits() != null) {
-			this.facetLimits = new HashMap<String, Integer>(searchState.getFacetLimits());
 		}
 		if (searchState.getFacetSorts() != null) {
 			this.facetSorts = new HashMap<String, String>(searchState.getFacetSorts());
@@ -295,14 +290,6 @@ public class SearchState implements Serializable, Cloneable {
 
 	public void setSearchTermOperator(String searchTermOperator) {
 		this.searchTermOperator = searchTermOperator;
-	}
-
-	public Map<String, Integer> getFacetLimits() {
-		return facetLimits;
-	}
-
-	public void setFacetLimits(Map<String, Integer> facetLimits) {
-		this.facetLimits = facetLimits;
 	}
 
 	public Integer getBaseFacetLimit() {

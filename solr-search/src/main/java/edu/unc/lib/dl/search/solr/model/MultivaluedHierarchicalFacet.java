@@ -42,6 +42,8 @@ public class MultivaluedHierarchicalFacet extends AbstractHierarchicalFacet {
 	}
 	
 	private void populateFacetNodes(String facetString) {
+		if (facetString == null)
+			return;
 		String[] tiers = MultivaluedHierarchicalFacetNode.extractFacetParts.split(facetString);
 		if (tiers.length == 0)
 			throw new InvalidHierarchicalFacetException("Empty facet string");
@@ -93,6 +95,7 @@ public class MultivaluedHierarchicalFacet extends AbstractHierarchicalFacet {
 
 	public void sortTiers() {
 		Collections.sort(this.facetNodes, new Comparator<HierarchicalFacetNode>(){
+			@Override
 			public int compare(HierarchicalFacetNode node1, HierarchicalFacetNode node2) {
 				return ((MultivaluedHierarchicalFacetNode)node1).getTiers().size() - ((MultivaluedHierarchicalFacetNode)node2).getTiers().size();
 			}
@@ -100,6 +103,9 @@ public class MultivaluedHierarchicalFacet extends AbstractHierarchicalFacet {
 	}
 	
 	private MultivaluedHierarchicalFacetNode getLastNode() {
+		if (this.facetNodes.size() == 0)
+			return null;
+		
 		return (MultivaluedHierarchicalFacetNode) this.facetNodes
 				.get(this.facetNodes.size() - 1);
 	}
@@ -133,12 +139,12 @@ public class MultivaluedHierarchicalFacet extends AbstractHierarchicalFacet {
 	
 	public void setDisplayValues(MultivaluedHierarchicalFacet facet) {
 		int startingCount = this.facetNodes.size();
-		String targetJoined = ((MultivaluedHierarchicalFacetNode)this.getLastNode()).joinTiers(false);
+		String targetJoined = this.getLastNode().joinTiers(false);
 		for (HierarchicalFacetNode node: facet.getFacetNodes()) {
 			MultivaluedHierarchicalFacetNode targetNode = (MultivaluedHierarchicalFacetNode)this.getNodeBySearchValue(node.getSearchValue());
 			if (targetNode != null) {
 				log.debug("Adding in display value " + node.getDisplayValue());
-				((MultivaluedHierarchicalFacetNode)targetNode).setDisplayValue(node.getDisplayValue());
+				targetNode.setDisplayValue(node.getDisplayValue());
 			} else {
 				String joined = ((MultivaluedHierarchicalFacetNode)node).joinTiers(false);
 				if (targetJoined.indexOf(joined) == 0) {
@@ -155,27 +161,32 @@ public class MultivaluedHierarchicalFacet extends AbstractHierarchicalFacet {
 
 	@Override
 	public String getSearchKey() {
-		return getLastNode().getSearchKey();
+		MultivaluedHierarchicalFacetNode node = getLastNode();
+		return node == null? null : getLastNode().getSearchKey();
 	}
 	
 	@Override
 	public String getSearchValue() {
-		return getLastNode().getSearchValue();
+		MultivaluedHierarchicalFacetNode node = getLastNode();
+		return node == null? null : getLastNode().getSearchValue();
 	}
 	
 	@Override
 	public String getDisplayValue() {
-		return getLastNode().getDisplayValue();
+		MultivaluedHierarchicalFacetNode node = getLastNode();
+		return node == null? null : getLastNode().getDisplayValue();
 	}
 	
 	@Override
 	public String getPivotValue() {
-		return getLastNode().getPivotValue();
+		MultivaluedHierarchicalFacetNode node = getLastNode();
+		return node == null? null : getLastNode().getPivotValue();
 	}
 	
 	@Override
 	public String getLimitToValue() {
-		return getLastNode().getLimitToValue();
+		MultivaluedHierarchicalFacetNode node = getLastNode();
+		return node == null? null : getLastNode().getLimitToValue();
 	}
 	
 	@Override

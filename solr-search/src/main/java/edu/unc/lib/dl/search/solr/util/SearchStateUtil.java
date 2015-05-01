@@ -62,7 +62,7 @@ public class SearchStateUtil {
 				params.put(fieldName, urlEncodeParameter(field.getValue()));
 			}
 		}
-		
+
 		if (searchState.getRangeFields() != null && searchState.getRangeFields().size() > 0){
 			for (Entry<String, RangePair> field: searchState.getRangeFields().entrySet()) {
 				String fieldName = searchSettings.searchFieldParam(field.getKey());
@@ -71,13 +71,34 @@ public class SearchStateUtil {
 		}
 		String ancestorPath = SearchFieldKeys.ANCESTOR_PATH.toString();
 		if (searchState.getFacets() != null && searchState.getFacets().size() > 0){
+
+			StringBuilder facetLimits = new StringBuilder();
+
 			for (Entry<String,Object> field: searchState.getFacets().entrySet()) {
 				if (!ancestorPath.equals(field.getKey())) {
+
 					String fieldName = searchSettings.searchFieldParam(field.getKey());
-					if (field.getValue() instanceof SearchFacet)
-						params.put(fieldName, urlEncodeParameter(((SearchFacet) field.getValue()).getLimitToValue()));
-					else params.put(fieldName, urlEncodeParameter(field.getValue().toString()));
+					if (field.getValue() instanceof SearchFacet) {
+						SearchFacet facet = (SearchFacet) field.getValue();
+						String value = facet.getLimitToValue();
+						if (value != null) {
+							params.put(fieldName, urlEncodeParameter(facet.getLimitToValue()));
+						}
+
+						if (facet.getFacetLimit() != null) {
+							if (facetLimits.length() > 0) {
+								facetLimits.append('|');
+							}
+							facetLimits.append(fieldName).append(':').append(facet.getFacetLimit());
+						}
+					} else {
+						params.put(fieldName, urlEncodeParameter(field.getValue().toString()));
+					}
 				}
+			}
+
+			if (facetLimits.length() > 0) {
+				params.put(searchSettings.searchStateParam("FACET_LIMIT_FIELDS"), facetLimits.toString());
 			}
 		}
 		return params;
@@ -98,10 +119,6 @@ public class SearchStateUtil {
 		
 		if (searchState.getFacetsToRetrieve() != null && searchState.getFacetsToRetrieve().size() > 0 && !searchState.getFacetsToRetrieve().containsAll(searchSettings.facetNames)){
 			params.put(searchSettings.searchStateParam("FACET_FIELDS_TO_RETRIEVE"), joinFields(searchState.getFacetsToRetrieve(), ",", true));
-		}
-		
-		if (searchState.getFacetLimits() != null && searchState.getFacetLimits().size() > 0){
-			params.put(searchSettings.searchStateParam("FACET_LIMIT_FIELDS"), joinFields(searchState.getFacetLimits()));
 		}
 		
 		if (searchState.getStartRow() != null && searchState.getStartRow() != 0){
@@ -126,7 +143,7 @@ public class SearchStateUtil {
 		}
 		
 		//Append search term operator if its not the default
-		if (searchState.getSearchTermOperator() != null && 
+		if (searchState.getSearchTermOperator() != null &&
 				!searchState.getSearchTermOperator().equals(searchSettings.defaultOperator)){
 			params.put(searchSettings.searchStateParam("SEARCH_TERM_OPERATOR"), searchState.getSearchTermOperator());
 		}
@@ -147,7 +164,7 @@ public class SearchStateUtil {
 	}
 	
 	public static String generateStateParameterString(HashMap<String,String> stateParameters){
-		return joinFields(stateParameters, '&', '=', false); 
+		return joinFields(stateParameters, '&', '=', false);
 	}
 	
 	private static String joinFields(Collection<String> collection, String delimiter, boolean performFieldLookup) {
