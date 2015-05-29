@@ -2623,6 +2623,13 @@ define('ResubmitPackageForm', [ 'jquery', 'jquery-ui', 'underscore', 'RemoteStat
 			}
 		}
 		
+		if ($.inArray('editDescription', metadata.permissions) != -1) {
+			items["editDescription"] = {name : 'Edit Description'};
+			if ($.inArray('info:fedora/cdr-model:Container', metadata.model) != -1) {
+				items["exportXML"] = {name : 'Export as XML'};
+			}
+		}
+		
 		
 	    items["copyid"] = {name : 'Copy PID to Clipboard'};
 		if ($.inArray('purgeForever', metadata.permissions) != -1) {
@@ -2704,6 +2711,11 @@ define('ResubmitPackageForm', [ 'jquery', 'jquery-ui', 'underscore', 'RemoteStat
 					case "exportCSV" :
 						document.location.href = baseUrl + "export/" + metadata.id;
 						break;
+					
+					case "exportXML" :
+						document.location.href = baseUrl + "exportxml/" + metadata.id;
+						break;
+					
 					case "copyid" :
 						window.prompt("Copy PID to clipboard", metadata.id);
 						break;
