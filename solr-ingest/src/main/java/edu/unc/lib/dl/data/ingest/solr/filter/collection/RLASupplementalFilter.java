@@ -76,13 +76,13 @@ public class RLASupplementalFilter extends CollectionSupplementalInformationFilt
 			if (FILENAME_ID.equalsIgnoreCase(element.getAttributeValue("ID")) || FILENAME_LABEL.equalsIgnoreCase(element.getAttributeValue("displayLabel"))) {
 				idb.setIdentifierSort(element.getTextTrim());
 			} else if (CATALOG_ID.equalsIgnoreCase(element.getAttributeValue("ID")) || CATALOG_LABEL.equalsIgnoreCase(element.getAttributeValue("displayLabel"))) {
-				idb.getDynamicFields().put(CATALOG_FIELD, element.getTextTrim());
+				idb.addDynamicField(CATALOG_FIELD, element.getTextTrim());
 			} else if (CONTEXT_1_ID.equalsIgnoreCase(element.getAttributeValue("ID")) || CONTEXT_1_LABEL.equalsIgnoreCase(element.getAttributeValue("displayLabel"))) {
-				idb.getDynamicFields().put(CONTEXT_1_FIELD, element.getTextTrim());
+				idb.addDynamicField(CONTEXT_1_FIELD, element.getTextTrim());
 			} else if (SITE_CODE_ID.equalsIgnoreCase(element.getAttributeValue("ID")) || SITE_CODE_LABEL.equalsIgnoreCase(element.getAttributeValue("displayLabel"))) {
 				Element geographicEl = element.getChild("geographic", JDOMNamespaceUtil.MODS_V3_NS);
 				if (geographicEl != null) {
-					idb.getDynamicFields().put(SITE_CODE_FIELD, geographicEl.getTextTrim());
+					idb.addDynamicField(SITE_CODE_FIELD, geographicEl.getTextTrim());
 				}
 			}
 

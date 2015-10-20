@@ -17,6 +17,7 @@ package edu.unc.lib.dl.search.solr.model;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -490,6 +491,13 @@ public class IndexDocumentBean {
 
 	public Map<String, Object> getDynamicFields() {
 		return dynamicFields;
+	}
+	
+	public void addDynamicField(String field, Object value) {
+		if (dynamicFields == null) {
+			dynamicFields = new HashMap<String, Object>();
+		}
+		dynamicFields.put(field, value);
 	}
 
 	public void setDynamicFields(Map<String, Object> dynamicFields) {

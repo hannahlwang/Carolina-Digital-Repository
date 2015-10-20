@@ -1,0 +1,39 @@
+
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+	<mods:name type="personal">
+		<mods:namePart type="given">Author</mods:namePart>
+		<mods:namePart type="family">Test</mods:namePart>
+		<mods:role>
+			<mods:roleTerm type="text" authority="marcrelator">Author
+			</mods:roleTerm>
+		</mods:role>
+		<mods:affiliation>Department of History</mods:affiliation>
+	</mods:name>
+	<mods:titleInfo>
+		<mods:title>Test ETD</mods:title>
+	</mods:titleInfo>
+	<mods:note displayLabel="Graduated" type="thesis">Spring 2015
+	</mods:note>
+	<mods:originInfo>
+		<mods:dateIssued encoding="iso8601">2015</mods:dateIssued>
+	</mods:originInfo>
+	<mods:language>
+		<mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+	</mods:language>
+	<mods:note displayLabel="Degree Type">Doctor of Philosophy</mods:note>
+	<mods:genre authority="local">Dissertation</mods:genre>
+	<mods:name type="personal">
+		<mods:namePart type="given">Advisor</mods:namePart>
+		<mods:namePart type="family">Test</mods:namePart>
+		<mods:role>
+			<mods:roleTerm type="text" authority="marcrelator">Thesis advisor
+			</mods:roleTerm>
+		</mods:role>
+	</mods:name>
+	<mods:typeOfResource>text</mods:typeOfResource>
+	<mods:physicalDescription>
+		<mods:form authority="marcform">electronic</mods:form>
+		<mods:internetMediaType>application/pdf</mods:internetMediaType>
+		<mods:extent>248</mods:extent>
+	</mods:physicalDescription>
+</mods:mods>
