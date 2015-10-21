@@ -17,6 +17,7 @@ package edu.unc.lib.dl.admin.controller;
 
 import static edu.unc.lib.dl.util.ContentModelHelper.Datastream.RELS_EXT;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ import edu.unc.lib.dl.model.ContainerSettings.ContainerView;
 import edu.unc.lib.dl.search.solr.model.BriefObjectMetadata;
 import edu.unc.lib.dl.search.solr.model.SimpleIdRequest;
 import edu.unc.lib.dl.search.solr.util.SearchFieldKeys;
+import edu.unc.lib.dl.search.solr.util.SearchSettings;
 import edu.unc.lib.dl.ui.service.SolrQueryLayerService;
 import edu.unc.lib.dl.util.ContentModelHelper.CDRProperty;
 import edu.unc.lib.dl.util.ContentModelHelper.Datastream;
@@ -65,13 +67,16 @@ public class EditCollectionSettingsController {
 	private TripleStoreQueryService tripleStoreQueryService;
 	@Autowired
 	private SolrQueryLayerService solrQueryService;
+	@Autowired
+	private SearchSettings searchSettings;
 	
 	private final String defaultDefaultTab = ContainerView.STRUCTURE.name();
 	private final List<String> defaultTabList = Arrays.asList(ContainerView.DESCRIPTION.name(),
 			ContainerView.STRUCTURE.name(), ContainerView.EXPORTS.name());
+	//private final List<String> defaultFacets =
 	
 	@RequestMapping(value = "editCollection/{pid}", method = RequestMethod.GET)
-	public @ResponseBody ContainerSettings getSettings(@PathVariable("pid") String pidString) {
+	public @ResponseBody Object getSettings(@PathVariable("pid") String pidString) {
 		Map<String, List<String>> triples = tripleStoreQueryService.fetchAllTriples(new PID(pidString));
 		if (triples == null || triples.size() == 0) {
 			return null;
@@ -92,7 +97,26 @@ public class EditCollectionSettingsController {
 			settings.setViews(defaultTabList);
 		}
 		
-		return settings;
+		if (settings.getFacets() == null) {
+			settings.setFacets(new ArrayList<>(searchSettings.getDefaultCollectionFacetNames()));
+		}
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("settings", settings);
+		result.put("facetInfo", getFacetInfo());
+		
+		return result;
+	}
+	
+	private Map<String, String> getFacetInfo() {
+		Map<String, String> info = new HashMap<>();
+		for (String facetName : searchSettings.getFacetNames()) {
+			String displayName = searchSettings.getSearchFieldLabels().get(facetName);
+			info.put(facetName, displayName == null?
+					searchSettings.getSearchFieldParams().get(facetName) : displayName);
+		}
+		
+		return info;
 	}
 	
 	@RequestMapping(value = "editCollection/{pid}", method = RequestMethod.POST)

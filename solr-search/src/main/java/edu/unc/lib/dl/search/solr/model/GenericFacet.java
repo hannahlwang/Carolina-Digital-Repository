@@ -40,7 +40,7 @@ public class GenericFacet implements Cloneable, SearchFacet {
 		this.count = 0;
 		this.fieldName = fieldName;
 		this.value = facetString;
-		this.displayValue = facetString;
+		setDisplayValue(facetString);
 	}
 	
 	public GenericFacet(FacetField.Count countObject){
@@ -51,14 +51,14 @@ public class GenericFacet implements Cloneable, SearchFacet {
 		this.count = countObject.getCount();
 		this.fieldName = fieldName;
 		this.value = countObject.getName();
-		this.displayValue = countObject.getName();
+		setDisplayValue(countObject.getName());
 	}
 	
 	public GenericFacet(GenericFacet facet){
 		this.fieldName = facet.getFieldName();
 		this.count = facet.getCount();
 		this.value = facet.getValue();
-		this.displayValue = facet.getDisplayValue();
+		setDisplayValue(facet.getDisplayValue());
 	}
 	
 

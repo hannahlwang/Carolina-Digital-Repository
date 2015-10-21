@@ -61,7 +61,8 @@ public class ContentModelHelper {
 				"hasSourceMetadataProfile"), invalidTerm("invalidTerm"), dateCreated("dateCreated"),
 				indexValidTerms("indexValidTerms"), warnInvalidTerms("warnInvalidTerms"), replaceInvalidTerms("replaceInvalidTerms"),
 				vocabularyType("vocabularyType"), vocabularyUri("vocabularyUri"), vocabularySelector("vocabularySelector"),
-				collectionDefaultView("collectionDefaultView"), collectionShowView("collectionShowView");
+				collectionDefaultView("collectionDefaultView"), collectionShowView("collectionShowView"),
+				collectionFacets("collectionFacets");
 
 		private URI uri;
 		private String predicate;

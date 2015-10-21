@@ -16,6 +16,7 @@
 package edu.unc.lib.dl.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ContainerSettings {
 	private String title;
 	private String defaultView;
 	private List<String> views;
+	private List<String> facets;
 	
 	public ContainerSettings(Element foxml) {
 		Element relsEl = FOXMLJDOMUtil.getDatastreamContent(Datastream.RELS_EXT, foxml);
@@ -45,12 +47,17 @@ public class ContainerSettings {
 		
 		defaultView = RDFXMLUtil.getLiteralValue(relsEl, CDRProperty.collectionDefaultView.getPredicate(),
 				CDRProperty.collectionDefaultView.getNamespace());
+		
+		setFacets(RDFXMLUtil.getLiteralValue(relsEl, CDRProperty.collectionFacets.getPredicate(),
+				CDRProperty.collectionFacets.getNamespace()));
 	}
 	
 	public ContainerSettings(Map<String, List<String>> triples) {
 		setViews(triples.get(CDRProperty.collectionShowView.toString()));
 		List<String> defaultViewValues = triples.get(CDRProperty.collectionDefaultView.toString());
 		defaultView = defaultViewValues != null? defaultViewValues.get(0) : null;
+		List<String> facets = triples.get(CDRProperty.collectionFacets.toString());
+		setFacets(facets != null? facets.get(0) : null);
 	}
 
 	public String getTitle() {
@@ -105,6 +112,23 @@ public class ContainerSettings {
 		}
 		
 		return result;
+	}
+	
+	public void setFacets(String facetsValue) {
+		if (facetsValue == null) {
+			facets = null;
+			return;
+		}
+		
+		facets = Arrays.asList(facetsValue.split(","));
+	}
+
+	public void setFacets(List<String> facets) {
+		this.facets = facets;
+	}
+
+	public List<String> getFacets() {
+		return facets;
 	}
 
 	public static enum ContainerView {

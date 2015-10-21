@@ -27,7 +27,8 @@ define('EditCollectionSettingsAction', ['jquery', 'underscore', 'RemoteStateChan
 		$.ajax({
 			url : "editCollection/" + this.context.target.pid,
 			type : "GET"
-		}).done(function(collectionSettings){
+		}).done(function(data){
+			var collectionSettings = data.settings;
 			var editSettingsForm = editSettingsTemplate({settings : collectionSettings});
 			
 			self.dialog.html(editSettingsForm);
