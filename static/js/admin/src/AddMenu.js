@@ -1,5 +1,5 @@
-define('AddMenu', [ 'jquery', 'jquery-ui', 'underscore', 'CreateContainerForm', 'IngestPackageForm', 'CreateSimpleObjectForm', 'ImportMetadataXMLForm', 'qtip'],
-		function($, ui, _, CreateContainerForm, IngestPackageForm, CreateSimpleObjectForm, ImportMetadataXMLForm) {
+define('AddMenu', [ 'jquery', 'jquery-ui', 'underscore', 'CreateContainerForm', 'IngestPackageForm', 'CreateSimpleObjectForm', 'ImportMetadataXMLForm', 'IngestFromSourceForm', 'qtip'],
+		function($, ui, _, CreateContainerForm, IngestPackageForm, CreateSimpleObjectForm, ImportMetadataXMLForm, IngestFromSourceForm) {
 	
 	function AddMenu(options) {
 		this.options = $.extend({}, options);
@@ -13,6 +13,7 @@ define('AddMenu', [ 'jquery', 'jquery-ui', 'underscore', 'CreateContainerForm', 
 			return items;
 		items["addContainer"] = {name : "Add Container"};
 		items["ingestPackage"] = {name : "Add Ingest Package"};
+		items["ingestSource"] = {name : "Add from File Server"};
 		items["simpleObject"] = {name : "Add Simple Object"};
 		items["importMetadata"] = {name : "Import MODS"};
 		return items;
@@ -51,6 +52,11 @@ define('AddMenu', [ 'jquery', 'jquery-ui', 'underscore', 'CreateContainerForm', 
 						break;
 					case "ingestPackage" :
 						new IngestPackageForm({
+							alertHandler : self.options.alertHandler
+						}).open(self.container.id);
+						break;
+					case "ingestSource" :
+						new IngestFromSourceForm({
 							alertHandler : self.options.alertHandler
 						}).open(self.container.id);
 						break;
