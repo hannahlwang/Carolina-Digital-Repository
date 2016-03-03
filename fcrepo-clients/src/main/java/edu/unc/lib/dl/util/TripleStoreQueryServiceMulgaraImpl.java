@@ -760,10 +760,10 @@ public class TripleStoreQueryServiceMulgaraImpl implements
 	}
 
 	private String sendTQL(String query) {
-		log.debug(query);
 		String result = null;
 		SOAPMessage reply = null;
 		SOAPConnection connection = null;
+		long start = System.currentTimeMillis();
 		try {
 			// Next, create the actual message
 			MessageFactory messageFactory = MessageFactory.newInstance();
@@ -830,6 +830,8 @@ public class TripleStoreQueryServiceMulgaraImpl implements
 								+ this.getItqlEndpointURL(), e);
 			}
 		}
+		
+		log.warn("Query completed in " + (System.currentTimeMillis() - start) + "ms: " + query);
 		return result;
 	}
 

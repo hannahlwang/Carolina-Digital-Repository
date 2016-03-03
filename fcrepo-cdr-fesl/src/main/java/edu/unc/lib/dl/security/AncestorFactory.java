@@ -69,10 +69,12 @@ public class AncestorFactory {
 	 */
 	public List<PID> getInheritanceList(PID pid)
 			throws ObjectNotFoundException {
+		long start = System.currentTimeMillis();
 		List<PID> result = new ArrayList<PID>();
 		while (true) {
-			if (!child2Parent.containsKey(pid))
+			if (!child2Parent.containsKey(pid)) {
 				updateCache(pid); // not cached
+			}
 			ParentBond bond = child2Parent.get(pid);
 			if (bond == null || bond == rootBond || !bond.inheritsRoles) { 
 				// no more parents or not inheriting further
@@ -82,6 +84,9 @@ public class AncestorFactory {
 				pid = bond.parentPid; // set up loop
 			}
 		}
+		long end = System.currentTimeMillis();
+		LOG.warn("Updated inheritance list in {}", (end - start));
+		
 		return result;
 	}
 

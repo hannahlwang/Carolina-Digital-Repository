@@ -153,7 +153,7 @@ public class CdrRIAttributeFinder extends DesignatorAttributeFinderModule {
 			return new EvaluationResult(BagAttribute.createEmptyBag(attributeType));
 		}
 
-		log.info("Total time for CDR role lookup: {} milliseconds", (System.currentTimeMillis() - startTime));
+		log.info("Total time for CDR attr {} lookup: {} milliseconds", attributeId, (System.currentTimeMillis() - startTime));
 		return result;
 	}
 
