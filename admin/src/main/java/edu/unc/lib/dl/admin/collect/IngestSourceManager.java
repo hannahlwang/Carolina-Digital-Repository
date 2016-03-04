@@ -219,6 +219,7 @@ public class IngestSourceManager {
 		if (version != null) {
 			// Add payload stats for bags
 			addBagInfo(candidate, filePath);
+			candidates.add(candidate);
 		} else if (file.isDirectory()) {
 			candidate.put("packagingType", PackagingType.DIRECTORY.getUri());
 		} else {
@@ -230,8 +231,6 @@ public class IngestSourceManager {
 			}
 			candidate.put("size", file.length());
 		}
-		
-		candidates.add(candidate);
 	}
 	
 	private void addBagInfo(Map<String, Object> fileInfo, Path filePath) {
